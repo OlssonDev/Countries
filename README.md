@@ -18,6 +18,10 @@ An Unreal Engine plugin that gets country data from the [REST Countries API](htt
 
 In the editor, use **Tools → Countries → Generate Countries Data Assets**. The tool gets the data and creates one data asset per country (in `/Game/Countries` by default).
 
+## Register as Primary Data Asset
+
+The data assets returns a primary asset type of `Country` to register in the AssetManager settings.
+
 ## Settings
 
 Configurable under **Project Settings → Editor → Countries Editor** (`UCTCountriesDeveloperSettings`):
