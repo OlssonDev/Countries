@@ -1,6 +1,6 @@
 # Countries
 
-An Unreal Engine plugin that gets country data from the [REST Countries API](https://restcountries.com) and makes it available at both runtime and edit time, including flag and coat-of-arms images.
+An Unreal Engine plugin that gets country data from the [REST Countries API](https://restcountries.com) and makes it available at both runtime and editor time, including flag and coat-of-arms images.
 
 ## Features
 
