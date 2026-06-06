@@ -32,7 +32,7 @@ namespace Countries::Internal
 	};
 }
 
-UCLASS()
+UCLASS(DisplayName = "Countries Subsystem")
 class UCTCountriesSubsystem : public UEngineSubsystem
 {
 	GENERATED_BODY()

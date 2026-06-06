@@ -1,8 +1,6 @@
 ﻿// Copyright (c) OlssonDev 2026. All Rights Reserved.
 
-
 #include "CTCountriesEditorSubsystem.h"
-
 #include "AssetToolsModule.h"
 #include "CountriesEditor.h"
 #include "CTCountriesDeveloperSettings.h"
