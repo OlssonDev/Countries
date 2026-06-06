@@ -16,7 +16,7 @@ An Unreal Engine plugin that gets country data from the [REST Countries API](htt
 
 ## Generating Data Assets
 
-In the editor, use **Tools → Countries → Generate Countries Data Assets**. The tool gets the data and creates one data asset per country.
+In the editor, use **Tools → Countries → Generate Countries Data Assets**. The tool gets the data and creates one data asset per country (in `/Game/Countries` by default).
 
 ## Settings
 
