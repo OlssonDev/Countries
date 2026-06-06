@@ -1,8 +1,6 @@
 ﻿// Copyright (c) OlssonDev 2026. All Rights Reserved.
 
-
 #include "CTCountriesBlueprintFunctionLibrary.h"
-
 #include "Countries.h"
 
 void UCTCountriesBlueprintFunctionLibrary::OpenCountryInGoogleMaps(const FCTCountryInfo& Country)

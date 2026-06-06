@@ -1,4 +1,6 @@
-﻿#include "CTCountriesSubsystem.h"
+﻿// Copyright (c) OlssonDev 2026. All Rights Reserved.
+
+#include "CTCountriesSubsystem.h"
 
 #include "CTCountryInfo.h"
 #include "HttpModule.h"

@@ -1,6 +1,5 @@
 ﻿// Copyright (c) OlssonDev 2026. All Rights Reserved.
 
-
 #include "CTFetchAllCountriesAsyncAction.h"
 
 DEFINE_LOG_CATEGORY(LogCTFetchAllCountriesAsyncAction)

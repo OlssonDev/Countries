@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright (c) OlssonDev 2026. All Rights Reserved.
 
 #include "Countries.h"
 
