@@ -13,17 +13,17 @@ class UCTCountriesBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable, Category = "Countries")
-	void OpenCountryInGoogleMaps(const FCTCountryInfo& Country);
+	COUNTRIES_API void OpenCountryInGoogleMaps(const FCTCountryInfo& Country);
 	
 	UFUNCTION(BlueprintCallable, Category = "Countries")
-	void OpenCountryInOpenStreetMaps(const FCTCountryInfo& Country);
+	COUNTRIES_API void OpenCountryInOpenStreetMaps(const FCTCountryInfo& Country);
 	
 	UFUNCTION(BlueprintCallable, Category = "Countries")
-	void OpenCountryInMaps(const FCTCountryInfo& Country, bool bPreferGoogleMaps);
+	COUNTRIES_API void OpenCountryInMaps(const FCTCountryInfo& Country, bool bPreferGoogleMaps);
 	
 	UFUNCTION(BlueprintCallable, Category = "Countries")
-	void OpenFlagInBrowser(const FCTCountryInfo& Country);
+	COUNTRIES_API void OpenFlagInBrowser(const FCTCountryInfo& Country);
 	
 	UFUNCTION(BlueprintCallable, Category = "Countries")
-	void OpenCoatOfArmsInBrowser(const FCTCountryInfo& Country);
+	COUNTRIES_API void OpenCoatOfArmsInBrowser(const FCTCountryInfo& Country);
 };
