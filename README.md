@@ -3,12 +3,16 @@
 An Unreal Engine plugin that gets country data from the [REST Countries API](https://restcountries.com) and makes it available at both runtime and edit time, including flag and coat-of-arms images.
 
 ## Features
-- Ability to export every country as a `UCTCountryPrimaryDataAsset` and downloads the flag and coat-of-arms PNGs as `UTexture2D` assets.
-  
-<img width="1289" height="1350" alt="image" src="https://github.com/user-attachments/assets/c19444e0-023e-470f-86ad-e8873e41c44e" />
 
+- Export every country as a `UCTCountryPrimaryDataAsset`, downloading the flag and coat-of-arms PNGs as `UTexture2D` assets.
 - Blueprint async node `Fetch All Countries`.
 - Blueprint library to open a country's Google Maps / OpenStreetMap page, flag, or coat of arms in the browser.
+
+<p align="center">
+  <img width="480" alt="Kenya exported as a data asset" src="https://github.com/user-attachments/assets/c19444e0-023e-470f-86ad-e8873e41c44e" />
+  <br />
+  <em>Kenya exported as a data asset</em>
+</p>
 
 ## Generating Data Assets
 
