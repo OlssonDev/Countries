@@ -6,7 +6,7 @@
 #include "Engine/DeveloperSettings.h"
 #include "CTCountriesDeveloperSettings.generated.h"
 
-UCLASS(config = Editor, defaultconfig)
+UCLASS(config = Editor, defaultconfig, meta = (DisplayName = "Countries Editor Settings"))
 class UCTCountriesDeveloperSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
