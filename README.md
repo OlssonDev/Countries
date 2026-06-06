@@ -27,10 +27,10 @@ Configurable under **Project Settings → Editor → Countries Editor** (`UCTCou
 
 ## Blueprint API
 
-- **Fetch All Countries** — async node returning the country array if successful.
-- **Open Country In Google Maps / OpenStreetMaps / Maps** — launch the country's map URL.
-- **Open Flag / Coat Of Arms In Browser** — launch the country's image URL.
+- **Fetch All Countries**: async node returning the country array if successful.
+- **Open Country In Google Maps / OpenStreetMaps / Maps**: launch the country's map URL.
+- **Open Flag / Coat Of Arms In Browser**: launch the country's image URL.
 
 ## Notes
 
-Country data is sourced from the REST Countries API. Attribution and licensing for that data and for downloaded flag/coat-of-arms images follow the API's terms.
+Country data is from the REST Countries API. Attribution and licensing for that data and for downloaded flag/coat-of-arms images follow the API's terms.
