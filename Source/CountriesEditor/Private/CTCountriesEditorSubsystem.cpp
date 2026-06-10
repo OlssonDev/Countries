@@ -17,6 +17,12 @@
 #include "UObject/SavePackage.h"
 #include "Widgets/Notifications/SNotificationList.h"
 
+static FAutoConsoleCommand CVarDumpExportingInfo(
+	TEXT("Countries.DumpExportingInfo"),
+	TEXT("Dumps information about the current state of the country export process."),
+	FConsoleCommandWithArgsDelegate::CreateStatic(&UCTCountriesEditorSubsystem::DumpExportingInfo)
+);
+
 void UCTCountriesEditorSubsystem::ExportCountriesAsDataAssets()
 {
 	if (IsExporting)
@@ -30,6 +36,23 @@ void UCTCountriesEditorSubsystem::ExportCountriesAsDataAssets()
 	
 	UCTCountriesSubsystem* CountriesSubsystem = GEngine->GetEngineSubsystem<UCTCountriesSubsystem>();
 	CountriesSubsystem->FetchAllCountries(FOnCountriesFetched::CreateUObject(this, &UCTCountriesEditorSubsystem::OnAllCountriesFetched));
+}
+
+void UCTCountriesEditorSubsystem::DumpExportingInfo(const TArray<FString>& Args)
+{
+	UCTCountriesEditorSubsystem* EditorSubsystem = GEditor->GetEditorSubsystem<UCTCountriesEditorSubsystem>();
+	
+	UE_LOG(LogCountriesEditor, Log, TEXT("=== Country Exporting Info ==="));
+	UE_LOG(LogCountriesEditor, Log, TEXT("IsExporting: %s"), EditorSubsystem->IsExporting ? TEXT("True") : TEXT("False"));
+	UE_LOG(LogCountriesEditor, Log, TEXT("Total Jobs: %d"), EditorSubsystem->JobQueue.Num());
+	UE_LOG(LogCountriesEditor, Log, TEXT("Current Job Index: %d"), EditorSubsystem->CurrentJobIndex);
+	UE_LOG(LogCountriesEditor, Log, TEXT("Jobs In Progress: %d"), EditorSubsystem->JobsInProgress);
+	UE_LOG(LogCountriesEditor, Log, TEXT("Pending Images: %d"), EditorSubsystem->PendingImages.Num());
+	
+	for (const TPair<TWeakObjectPtr<UCTCountryPrimaryDataAsset>, int32>& Pair : EditorSubsystem->PendingImages)
+	{
+		UE_LOG(LogCountriesEditor, Log, TEXT(" - %s: %d pending images"), *Pair.Key->GetName(), Pair.Value);
+	}
 }
 
 void UCTCountriesEditorSubsystem::OnAllCountriesFetched(const TArray<FCTCountryInfo>& Countries, bool bSuccess)
@@ -78,7 +101,7 @@ void UCTCountriesEditorSubsystem::OnAllCountriesFetched(const TArray<FCTCountryI
 		
 		int32 ImageCount = 0;
 
-		if (!Country.Flags.Png.IsEmpty() && CountryDataAsset->CoatOfArmsTexture.IsNull())
+		if (!Country.Flags.Png.IsEmpty() && CountryDataAsset->FlagTexture.IsNull())
 		{
 			JobQueue.Add(FImageJob{
 				Country.Flags.Png,
@@ -101,6 +124,8 @@ void UCTCountriesEditorSubsystem::OnAllCountriesFetched(const TArray<FCTCountryI
 			
 			++ImageCount;
 		}
+		
+		SaveAssetPackage(CountryDataAsset);
 
 		if (ImageCount > 0)
 		{
@@ -134,26 +159,25 @@ void UCTCountriesEditorSubsystem::StartDownloadJob(const FImageJob& Job)
 	Request->SetURL(Job.Url);
 	Request->SetVerb(TEXT("GET"));
 	Request->SetHeader(TEXT("User-Agent"), TEXT("CountriesFlags/1.0"));
-	
+	Request->SetTimeout(30.0f);
+
 	Request->OnProcessRequestComplete().BindUObject(this, &UCTCountriesEditorSubsystem::OnImageDownloaded, Job);
-	Request->ProcessRequest();
+
+	if (!Request->ProcessRequest())
+	{
+		UE_LOG(LogCountriesEditor, Warning, TEXT("Failed to start request: %s"), *Job.Url);
+		DecrementJobsInProgress(Job);
+		ProcessDownloads();
+	}
 }
 
 void UCTCountriesEditorSubsystem::OnImageDownloaded(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully, FImageJob Job)
 {
 	ON_SCOPE_EXIT
 	{
+		DecrementJobsInProgress(Job);
 		ProcessDownloads();
 	};
-	
-	--JobsInProgress;
-
-	UCTCountryPrimaryDataAsset* DataAsset = Job.DataAsset.Get();
-	if (!IsValid(DataAsset))
-	{
-		UE_LOG(LogCountriesEditor, Warning, TEXT("Data asset was destroyed before image could be downloaded: %s"), *Job.Url);
-		return;
-	}
 	
 	if (!bConnectedSuccessfully || !Response.IsValid() || Response->GetResponseCode() != 200)
 	{
@@ -170,6 +194,8 @@ void UCTCountriesEditorSubsystem::OnImageDownloaded(FHttpRequestPtr Request, FHt
 		
 	SaveAssetPackage(Texture);
 
+	UCTCountryPrimaryDataAsset* DataAsset = Job.DataAsset.Get();
+	
 	if (Job.bIsFlag)
 	{
 		DataAsset->FlagTexture = Texture;
@@ -180,14 +206,6 @@ void UCTCountriesEditorSubsystem::OnImageDownloaded(FHttpRequestPtr Request, FHt
 	}
 	
 	(void)DataAsset->MarkPackageDirty();
-		
-	if (int32* Pending = PendingImages.Find(Job.DataAsset))
-	{
-		if (--*Pending <= 0)
-		{
-			PendingImages.Remove(Job.DataAsset);
-		}
-	}
 }
 
 UTexture2D* UCTCountriesEditorSubsystem::CreateTextureAssetFromPng(const TArray<uint8>& PngBytes, const FString& PackageName, const FString& AssetName)
@@ -286,4 +304,17 @@ void UCTCountriesEditorSubsystem::StopNotification()
 	NotificationItem->SetText(FText::FromString(TEXT("Finished exporting countries!")));
 	NotificationItem->SetExpireDuration(5.0f);
 	NotificationItem.Reset();
+}
+
+void UCTCountriesEditorSubsystem::DecrementJobsInProgress(const Countries::Http::FImageJob& Job)
+{
+	if (int32* Pending = PendingImages.Find(Job.DataAsset))
+	{
+		if (--*Pending <= 0)
+		{
+			PendingImages.Remove(Job.DataAsset);
+		}
+	}
+
+	--JobsInProgress;
 }

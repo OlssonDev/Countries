@@ -25,5 +25,5 @@ public:
 	
 	// The maximum number of concurrent image downloads when exporting country data.
 	UPROPERTY(EditAnywhere, Config, Category = "Countries Editor")
-	int32 MaxConcurrentDownloads = 6;
+	int32 MaxConcurrentDownloads = 2;
 };

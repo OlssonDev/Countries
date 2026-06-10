@@ -28,6 +28,9 @@ class UCTCountriesEditorSubsystem : public UEditorSubsystem
 	GENERATED_BODY()
 public:
 	void ExportCountriesAsDataAssets();
+	
+	static void DumpExportingInfo(const TArray<FString>& Args);
+
 private:
 	using FImageJob = Countries::Http::FImageJob;
 	void OnAllCountriesFetched(const TArray<FCTCountryInfo>& Countries, bool bSuccess);
@@ -44,6 +47,7 @@ private:
 	
 	void StartNotification();
 	void StopNotification();
+	void DecrementJobsInProgress(const Countries::Http::FImageJob& Job);
 	
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UCTCountryPrimaryDataAsset>> CountryDataAssets;
